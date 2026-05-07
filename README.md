@@ -2,7 +2,7 @@
 
 ## Live Demo
 
-Add Render URL here after deployment.
+https://vero-patient-booking.onrender.com
 
 ## Overview
 
