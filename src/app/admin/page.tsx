@@ -106,60 +106,36 @@ export default function AdminPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-2">
-        <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center">
-          <LayoutDashboard className="w-4 h-4 text-white" />
+      <div className="flex items-center gap-3 mb-2 animate-slide-up">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center shadow-md shadow-violet-200">
+          <LayoutDashboard className="w-5 h-5 text-white" />
         </div>
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">
-            Admin Dashboard
-          </h1>
-          <p className="text-sm text-gray-500">
-            Review and manage upcoming patient bookings.
-          </p>
+          <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+          <p className="text-sm text-gray-500">Review and manage upcoming patient bookings.</p>
         </div>
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 mb-7">
-        <SummaryCard
-          label="Pending"
-          count={counts.pending}
-          color="text-amber-600"
-          bg="bg-amber-50"
-        />
-        <SummaryCard
-          label="Confirmed"
-          count={counts.confirmed}
-          color="text-green-600"
-          bg="bg-green-50"
-        />
-        <SummaryCard
-          label="Cancelled"
-          count={counts.cancelled}
-          color="text-gray-500"
-          bg="bg-gray-50"
-        />
-        <SummaryCard
-          label="Total"
-          count={bookings.length}
-          color="text-blue-600"
-          bg="bg-blue-50"
-        />
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 mb-7 stagger">
+        <SummaryCard label="Pending" count={counts.pending} gradient="from-amber-500 to-orange-500" />
+        <SummaryCard label="Confirmed" count={counts.confirmed} gradient="from-emerald-500 to-teal-500" />
+        <SummaryCard label="Cancelled" count={counts.cancelled} gradient="from-gray-400 to-slate-500" />
+        <SummaryCard label="Total" count={bookings.length} gradient="from-violet-600 to-indigo-600" />
       </div>
 
       {/* Status filter */}
-      <div className="flex items-center gap-2 mb-5 flex-wrap">
-        <span className="text-sm text-gray-500 mr-1">Filter:</span>
+      <div className="flex items-center gap-2 mb-5 flex-wrap animate-fade-in">
+        <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest mr-1">Filter</span>
         {STATUS_FILTERS.map((f) => (
           <button
             key={f.value}
             onClick={() => setStatusFilter(f.value)}
             className={cn(
-              "px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
+              "px-3 py-1.5 rounded-lg text-sm font-semibold transition-all",
               statusFilter === f.value
-                ? "bg-blue-600 text-white"
-                : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+                ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-200"
+                : "bg-white border border-gray-200 text-gray-600 hover:border-violet-200 hover:text-violet-700"
             )}
           >
             {f.label}
@@ -170,14 +146,16 @@ export default function AdminPage() {
       {/* Bookings list */}
       {loading ? (
         <div className="flex justify-center py-16">
-          <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+          <Loader2 className="w-6 h-6 animate-spin text-violet-500" />
         </div>
       ) : displayedBookings.length === 0 ? (
         <Card>
           <CardContent className="py-16 text-center">
-            <Calendar className="w-10 h-10 text-gray-200 mx-auto mb-3" />
-            <p className="text-gray-500 font-medium">No bookings found</p>
-            <p className="text-sm text-gray-400 mt-1">
+            <div className="w-14 h-14 rounded-2xl bg-gray-50 flex items-center justify-center mx-auto mb-3">
+              <Calendar className="w-7 h-7 text-gray-300" />
+            </div>
+            <p className="text-gray-500 font-semibold text-sm">No bookings found</p>
+            <p className="text-xs text-gray-400 mt-1">
               {statusFilter !== "ALL"
                 ? `No ${statusFilter.toLowerCase()} bookings yet.`
                 : "No bookings have been created yet."}
@@ -203,18 +181,16 @@ export default function AdminPage() {
 function SummaryCard({
   label,
   count,
-  color,
-  bg,
+  gradient,
 }: {
   label: string;
   count: number;
-  color: string;
-  bg: string;
+  gradient: string;
 }) {
   return (
-    <div className={cn("rounded-xl p-4 border border-transparent", bg)}>
-      <p className={cn("text-2xl font-bold", color)}>{count}</p>
-      <p className="text-xs text-gray-500 mt-0.5">{label}</p>
+    <div className={cn("rounded-2xl p-4 bg-gradient-to-br text-white shadow-sm animate-slide-up", gradient)}>
+      <p className="text-2xl font-bold">{count}</p>
+      <p className="text-xs font-semibold mt-0.5 text-white/80 uppercase tracking-wide">{label}</p>
     </div>
   );
 }
@@ -244,7 +220,7 @@ function BookingCard({
   const canCancel = booking.status === "PENDING" || booking.status === "CONFIRMED";
 
   return (
-    <Card className="hover:shadow-sm transition-shadow">
+    <Card className="hover:shadow-md transition-all duration-200 hover:-translate-y-0.5">
       <CardContent className="pt-5">
         <div className="flex items-start justify-between flex-wrap gap-3">
           {/* Left: main info */}
@@ -304,7 +280,7 @@ function BookingCard({
                 variant="outline"
                 onClick={() => onUpdateStatus(booking.id, "CANCELLED")}
                 disabled={actionLoading !== null}
-                className="gap-1.5 text-red-600 border-red-200 hover:bg-red-50"
+                className="gap-1.5 text-red-500 border-red-100 hover:bg-red-50 hover:border-red-200"
               >
                 {actionLoading === booking.id + "CANCELLED" ? (
                   <Loader2 className="w-3 h-3 animate-spin" />

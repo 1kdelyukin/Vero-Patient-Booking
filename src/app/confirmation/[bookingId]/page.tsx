@@ -33,28 +33,28 @@ export default async function ConfirmationPage({ params }: PageProps) {
   return (
     <div className="max-w-lg mx-auto px-4 sm:px-6 py-10">
       {/* Success banner */}
-      <div className="text-center mb-8">
-        <div className="mx-auto w-14 h-14 rounded-full bg-green-50 flex items-center justify-center mb-4">
-          <CheckCircle2 className="w-7 h-7 text-green-500" />
+      <div className="text-center mb-8 animate-slide-up">
+        <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center mb-5 shadow-lg shadow-violet-200 animate-scale-in">
+          <CheckCircle2 className="w-8 h-8 text-white" />
         </div>
-        <h1 className="text-2xl font-semibold text-gray-900">
+        <h1 className="text-2xl font-bold text-gray-900">
           Appointment Request Received
         </h1>
-        <p className="text-gray-500 text-sm mt-2 max-w-sm mx-auto">
-          Your care team will review your request and confirm your appointment
-          shortly.
+        <p className="text-gray-500 text-sm mt-2 max-w-sm mx-auto leading-relaxed">
+          Your care team will review your request and confirm your appointment shortly.
         </p>
       </div>
 
-      <Card className="mb-6">
+      <Card className="mb-6 border-gray-100 shadow-sm animate-slide-up" style={{ animationDelay: "80ms" }}>
         <CardContent className="pt-5">
           {/* Status */}
           <div className="flex items-center justify-between pb-4 border-b border-gray-50">
-            <span className="text-sm text-gray-500">Status</span>
+            <span className="text-sm font-medium text-gray-500">Status</span>
             <Badge variant={statusInfo.variant}>{statusInfo.label}</Badge>
           </div>
 
-          <div className="space-y-4 pt-4">
+          <div className="space-y-2 pt-4">
+            <p className="text-xs font-semibold text-violet-500 uppercase tracking-widest mb-3">Appointment</p>
             <ConfirmRow
               icon={<Stethoscope className="w-4 h-4" />}
               label="Physician"
@@ -76,10 +76,11 @@ export default async function ConfirmationPage({ params }: PageProps) {
               label="Time"
               value={`${format(new Date(booking.slot.startTime), "h:mm a")} – ${format(new Date(booking.slot.endTime), "h:mm a")}`}
             />
-            <div className="border-t border-gray-50 pt-4">
+            <div className="border-t border-gray-50 pt-3 mt-3">
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Patient</p>
               <ConfirmRow
                 icon={<User className="w-4 h-4" />}
-                label="Patient"
+                label="Name"
                 value={`${booking.patientFirstName} ${booking.patientLastName}`}
                 subValue={booking.patientEmail}
               />
@@ -95,10 +96,10 @@ export default async function ConfirmationPage({ params }: PageProps) {
 
       {/* Reference ID */}
       <p className="text-center text-xs text-gray-400 mb-6">
-        Booking reference: <span className="font-mono">{booking.id}</span>
+        Booking reference: <span className="font-mono text-gray-500">{booking.id}</span>
       </p>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center animate-fade-in" style={{ animationDelay: "160ms" }}>
         <Link href="/">
           <Button variant="outline">Book another appointment</Button>
         </Link>
@@ -119,14 +120,14 @@ function ConfirmRow({
   subValue?: string;
 }) {
   return (
-    <div className="flex items-start gap-3 py-1">
-      <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 shrink-0">
+    <div className="flex items-start gap-3 py-1.5">
+      <div className="w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center text-violet-500 shrink-0">
         {icon}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-xs text-gray-500">{label}</p>
-        <p className="text-sm font-medium text-gray-900 mt-0.5">{value}</p>
-        {subValue && <p className="text-xs text-gray-500 mt-0.5">{subValue}</p>}
+        <p className="text-xs text-gray-400 font-medium">{label}</p>
+        <p className="text-sm font-semibold text-gray-900 mt-0.5 leading-snug">{value}</p>
+        {subValue && <p className="text-xs text-gray-400 mt-0.5">{subValue}</p>}
       </div>
     </div>
   );

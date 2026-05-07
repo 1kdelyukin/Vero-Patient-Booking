@@ -14,6 +14,7 @@ import {
   CheckCircle2,
   Loader2,
   AlertCircle,
+  Sparkles,
 } from "lucide-react";
 import { bookingFormSchema, type BookingFormValues } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
@@ -44,9 +45,27 @@ const STEPS = [
   { label: "Review", icon: CheckCircle2 },
 ];
 
+/** Deterministic gradient per physician index */
+const AVATAR_GRADIENTS = [
+  "from-violet-500 to-indigo-600",
+  "from-indigo-500 to-blue-600",
+  "from-fuchsia-500 to-violet-600",
+  "from-sky-500 to-indigo-600",
+];
+
+function initials(name: string) {
+  return name
+    .split(" ")
+    .map((p) => p[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
+
 export default function BookingPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
+  const [prevStep, setPrevStep] = useState(1);
   const [physicians, setPhysicians] = useState<Physician[]>([]);
   const [slots, setSlots] = useState<Slot[]>([]);
   const [selectedPhysician, setSelectedPhysician] = useState<Physician | null>(null);
@@ -95,7 +114,7 @@ export default function BookingPage() {
       .then((data) => {
         setSlots(data);
         setLoadingSlots(false);
-        setStep(2);
+        goTo(2);
       })
       .catch(() => setLoadingSlots(false));
   };
@@ -103,6 +122,11 @@ export default function BookingPage() {
   const handleSelectSlot = (slot: Slot) => {
     setSelectedSlot(slot);
     form.setValue("slotId", slot.id);
+  };
+
+  const goTo = (n: number) => {
+    setPrevStep(step);
+    setStep(n);
   };
 
   const handleSubmit = async () => {
@@ -131,397 +155,372 @@ export default function BookingPage() {
 
   const canProceedStep1 = !!selectedPhysician;
   const canProceedStep2 = !!selectedSlot;
+  const isForward = step > prevStep;
 
   return (
-    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
-      {/* Page heading */}
-      <div className="text-center mb-8">
-        <h1 className="text-2xl font-semibold text-gray-900">
-          Book an Appointment
-        </h1>
-        <p className="text-gray-500 mt-1 text-sm">
-          Choose your care team, pick a time, and confirm your visit.
-        </p>
-      </div>
-
-      {/* Step indicator */}
-      <div className="flex items-center justify-center mb-8">
-        {STEPS.map((s, i) => {
-          const stepNum = i + 1;
-          const isActive = step === stepNum;
-          const isCompleted = step > stepNum;
-          return (
-            <div key={s.label} className="flex items-center">
-              <div className="flex flex-col items-center">
-                <div
-                  className={cn(
-                    "w-9 h-9 rounded-full flex items-center justify-center text-sm font-medium transition-colors",
-                    isActive && "bg-blue-600 text-white",
-                    isCompleted && "bg-blue-100 text-blue-600",
-                    !isActive && !isCompleted && "bg-gray-100 text-gray-400"
-                  )}
-                >
-                  {isCompleted ? (
-                    <CheckCircle2 className="w-4 h-4" />
-                  ) : (
-                    stepNum
-                  )}
-                </div>
-                <span
-                  className={cn(
-                    "text-xs mt-1 font-medium hidden sm:block",
-                    isActive ? "text-blue-600" : "text-gray-400"
-                  )}
-                >
-                  {s.label}
-                </span>
-              </div>
-              {i < STEPS.length - 1 && (
-                <div
-                  className={cn(
-                    "w-12 sm:w-16 h-0.5 mx-2 mb-4",
-                    step > stepNum ? "bg-blue-200" : "bg-gray-100"
-                  )}
-                />
-              )}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Step 1: Choose physician */}
-      {step === 1 && (
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">
-            Choose a Physician
-          </h2>
-          <p className="text-sm text-gray-500 mb-5">
-            Select the physician you would like to see.
-          </p>
-
-          {loadingPhysicians ? (
-            <div className="flex justify-center py-12">
-              <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {physicians.map((p) => (
-                <button
-                  key={p.id}
-                  onClick={() => handleSelectPhysician(p)}
-                  className={cn(
-                    "w-full text-left rounded-xl border p-4 transition-all",
-                    selectedPhysician?.id === p.id
-                      ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
-                      : "border-gray-100 bg-white hover:border-blue-200 hover:bg-blue-50/30"
-                  )}
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="font-semibold text-gray-900">{p.name}</p>
-                      <p className="text-sm text-blue-600 mt-0.5">
-                        {p.specialty}
-                      </p>
-                      <div className="flex items-center gap-1 mt-1.5 text-gray-500 text-xs">
-                        <MapPin className="w-3 h-3" />
-                        {p.location}
-                      </div>
-                      {p.bio && (
-                        <p className="text-xs text-gray-400 mt-2 leading-relaxed">
-                          {p.bio}
-                        </p>
-                      )}
-                    </div>
-                    {selectedPhysician?.id === p.id && (
-                      <CheckCircle2 className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
-                    )}
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-
-          <div className="mt-6 flex justify-end">
-            <Button
-              onClick={handleProceedToTime}
-              disabled={!canProceedStep1 || loadingSlots}
-            >
-              {loadingSlots ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Loading times...
-                </>
-              ) : (
-                <>
-                  Continue
-                  <ChevronRight className="w-4 h-4" />
-                </>
-              )}
-            </Button>
+    <div>
+      {/* Hero banner */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-indigo-600 to-indigo-700 py-10 px-4">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(255,255,255,0.12),transparent)]" />
+        <div className="relative max-w-2xl mx-auto text-center">
+          <div className="inline-flex items-center gap-1.5 bg-white/15 backdrop-blur-sm text-white/90 text-xs font-semibold px-3 py-1 rounded-full mb-4 animate-fade-in">
+            <Sparkles className="w-3 h-3" />
+            Intelligent Patient Scheduling
           </div>
-        </div>
-      )}
-
-      {/* Step 2: Choose time */}
-      {step === 2 && (
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">
-            Choose an Appointment Time
-          </h2>
-          <p className="text-sm text-gray-500 mb-5">
-            Available times for{" "}
-            <span className="font-medium text-gray-700">
-              {selectedPhysician?.name}
-            </span>
+          <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight animate-slide-up">
+            Book Your Appointment
+          </h1>
+          <p className="text-indigo-100 mt-2 text-sm sm:text-base animate-slide-up" style={{ animationDelay: "60ms" }}>
+            Connect with your care team in minutes.
           </p>
+        </div>
+      </div>
 
-          {slots.length === 0 ? (
-            <Card>
-              <CardContent className="py-10 text-center">
-                <Clock className="w-8 h-8 text-gray-300 mx-auto mb-3" />
-                <p className="text-gray-500 font-medium">
-                  No available appointment times
-                </p>
-                <p className="text-sm text-gray-400 mt-1">
-                  Please go back and select a different physician.
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {slots.map((slot) => {
-                const start = new Date(slot.startTime);
-                const isSelected = selectedSlot?.id === slot.id;
-                return (
-                  <button
-                    key={slot.id}
-                    onClick={() => handleSelectSlot(slot)}
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+        {/* Step indicator */}
+        <div className="flex items-center justify-center mb-8 animate-fade-in">
+          {STEPS.map((s, i) => {
+            const stepNum = i + 1;
+            const isActive = step === stepNum;
+            const isCompleted = step > stepNum;
+            const Icon = s.icon;
+            return (
+              <div key={s.label} className="flex items-center">
+                <div className="flex flex-col items-center">
+                  <div
                     className={cn(
-                      "rounded-lg border p-3 text-left transition-all",
-                      isSelected
-                        ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
-                        : "border-gray-100 bg-white hover:border-blue-200 hover:bg-blue-50/30"
+                      "w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300",
+                      isActive && "bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-200",
+                      isCompleted && "bg-violet-100 text-violet-600",
+                      !isActive && !isCompleted && "bg-gray-100 text-gray-400"
                     )}
                   >
-                    <p className="text-xs font-medium text-gray-500">
-                      {format(start, "EEE, MMM d")}
-                    </p>
-                    <p
+                    {isCompleted ? (
+                      <CheckCircle2 className="w-4 h-4" />
+                    ) : (
+                      <Icon className="w-4 h-4" />
+                    )}
+                  </div>
+                  <span
+                    className={cn(
+                      "text-xs mt-1.5 font-medium hidden sm:block transition-colors duration-300",
+                      isActive ? "text-violet-600" : isCompleted ? "text-violet-400" : "text-gray-400"
+                    )}
+                  >
+                    {s.label}
+                  </span>
+                </div>
+                {i < STEPS.length - 1 && (
+                  <div className="relative w-12 sm:w-16 h-0.5 mx-2 mb-4 overflow-hidden rounded-full bg-gray-100">
+                    <div
+                      className="absolute inset-y-0 left-0 bg-gradient-to-r from-violet-400 to-indigo-400 transition-all duration-500"
+                      style={{ width: step > stepNum ? "100%" : "0%" }}
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Animated step panel */}
+        <div key={step} className={cn(isForward ? "animate-slide-right" : "animate-slide-up")}>
+
+          {/* ── Step 1: Choose physician ── */}
+          {step === 1 && (
+            <div>
+              <StepHeader
+                title="Choose a Physician"
+                subtitle="Select the specialist you'd like to see."
+              />
+
+              {loadingPhysicians ? (
+                <div className="flex justify-center py-16">
+                  <Loader2 className="w-6 h-6 animate-spin text-violet-500" />
+                </div>
+              ) : (
+                <div className="space-y-3 stagger">
+                  {physicians.map((p, idx) => (
+                    <button
+                      key={p.id}
+                      onClick={() => handleSelectPhysician(p)}
                       className={cn(
-                        "text-sm font-semibold mt-0.5",
-                        isSelected ? "text-blue-700" : "text-gray-900"
+                        "w-full text-left rounded-2xl border p-4 transition-all duration-200 animate-slide-up",
+                        selectedPhysician?.id === p.id
+                          ? "border-violet-400 bg-violet-50/80 ring-2 ring-violet-200 shadow-md shadow-violet-100"
+                          : "border-gray-100 bg-white hover:border-violet-200 hover:shadow-md hover:shadow-violet-50 hover:-translate-y-0.5 shadow-sm"
                       )}
                     >
-                      {format(start, "h:mm a")}
-                    </p>
-                  </button>
-                );
-              })}
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={cn(
+                            "w-11 h-11 rounded-xl flex items-center justify-center text-white text-sm font-bold shrink-0 shadow-sm bg-gradient-to-br",
+                            AVATAR_GRADIENTS[idx % AVATAR_GRADIENTS.length]
+                          )}
+                        >
+                          {initials(p.name)}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <p className="font-semibold text-gray-900 text-sm leading-tight">{p.name}</p>
+                              <p className="text-xs text-violet-600 font-medium mt-0.5">{p.specialty}</p>
+                            </div>
+                            {selectedPhysician?.id === p.id && (
+                              <CheckCircle2 className="w-[18px] h-[18px] text-violet-500 shrink-0 mt-0.5" />
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1 mt-1.5 text-gray-400 text-xs">
+                            <MapPin className="w-3 h-3" />
+                            {p.location}
+                          </div>
+                          {p.bio && (
+                            <p className="text-xs text-gray-400 mt-1.5 leading-relaxed line-clamp-2">{p.bio}</p>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              <div className="mt-6 flex justify-end">
+                <Button onClick={handleProceedToTime} disabled={!canProceedStep1 || loadingSlots} size="lg">
+                  {loadingSlots ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Loading times…
+                    </>
+                  ) : (
+                    <>
+                      Continue
+                      <ChevronRight className="w-4 h-4" />
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           )}
 
-          <div className="mt-6 flex justify-between">
-            <Button variant="outline" onClick={() => setStep(1)}>
-              <ChevronLeft className="w-4 h-4" />
-              Back
-            </Button>
-            <Button
-              onClick={() => setStep(3)}
-              disabled={!canProceedStep2}
-            >
-              Continue
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Step 3: Patient details */}
-      {step === 3 && (
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">
-            Your Details
-          </h2>
-          <p className="text-sm text-gray-500 mb-5">
-            Tell us a bit about yourself and the reason for your visit.
-          </p>
-
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  First Name <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  placeholder="Jane"
-                  {...form.register("patientFirstName")}
-                />
-                {form.formState.errors.patientFirstName && (
-                  <p className="text-xs text-red-500 mt-1">
-                    {form.formState.errors.patientFirstName.message}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                  Last Name <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  placeholder="Smith"
-                  {...form.register("patientLastName")}
-                />
-                {form.formState.errors.patientLastName && (
-                  <p className="text-xs text-red-500 mt-1">
-                    {form.formState.errors.patientLastName.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
+          {/* ── Step 2: Choose time ── */}
+          {step === 2 && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Email Address <span className="text-red-500">*</span>
-              </label>
-              <Input
-                type="email"
-                placeholder="jane@example.com"
-                {...form.register("patientEmail")}
+              <StepHeader
+                title="Choose a Time"
+                subtitle={
+                  <>
+                    Available slots for{" "}
+                    <span className="font-semibold text-gray-800">{selectedPhysician?.name}</span>
+                  </>
+                }
               />
-              {form.formState.errors.patientEmail && (
-                <p className="text-xs text-red-500 mt-1">
-                  {form.formState.errors.patientEmail.message}
-                </p>
-              )}
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Phone Number <span className="text-red-500">*</span>
-              </label>
-              <Input
-                type="tel"
-                placeholder="555-0100"
-                {...form.register("patientPhone")}
-              />
-              {form.formState.errors.patientPhone && (
-                <p className="text-xs text-red-500 mt-1">
-                  {form.formState.errors.patientPhone.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Reason for Visit <span className="text-red-500">*</span>
-              </label>
-              <Textarea
-                placeholder="Briefly describe the reason for your appointment..."
-                rows={3}
-                {...form.register("reasonForVisit")}
-              />
-              {form.formState.errors.reasonForVisit && (
-                <p className="text-xs text-red-500 mt-1">
-                  {form.formState.errors.reasonForVisit.message}
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div className="mt-6 flex justify-between">
-            <Button variant="outline" onClick={() => setStep(2)}>
-              <ChevronLeft className="w-4 h-4" />
-              Back
-            </Button>
-            <Button
-              onClick={async () => {
-                const valid = await form.trigger([
-                  "patientFirstName",
-                  "patientLastName",
-                  "patientEmail",
-                  "patientPhone",
-                  "reasonForVisit",
-                ]);
-                if (valid) setStep(4);
-              }}
-            >
-              Review Appointment
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Step 4: Review & submit */}
-      {step === 4 && (
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">
-            Review Your Appointment
-          </h2>
-          <p className="text-sm text-gray-500 mb-5">
-            Please confirm the details below before submitting.
-          </p>
-
-          <Card className="mb-5">
-            <CardContent className="pt-5 space-y-1">
-              <ReviewRow
-                label="Physician"
-                value={`${selectedPhysician?.name} — ${selectedPhysician?.specialty}`}
-              />
-              <ReviewRow
-                label="Location"
-                value={selectedPhysician?.location || ""}
-              />
-              {selectedSlot && (
-                <ReviewRow
-                  label="Appointment"
-                  value={`${format(new Date(selectedSlot.startTime), "EEEE, MMMM d, yyyy")} at ${format(new Date(selectedSlot.startTime), "h:mm a")}`}
-                />
-              )}
-              <div className="border-t border-gray-100 pt-3 mt-3 space-y-1">
-                <ReviewRow
-                  label="Patient"
-                  value={`${form.getValues("patientFirstName")} ${form.getValues("patientLastName")}`}
-                />
-                <ReviewRow
-                  label="Email"
-                  value={form.getValues("patientEmail")}
-                />
-                <ReviewRow
-                  label="Phone"
-                  value={form.getValues("patientPhone")}
-                />
-                <ReviewRow
-                  label="Reason for Visit"
-                  value={form.getValues("reasonForVisit")}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {submitError && (
-            <div className="mb-4 flex items-start gap-2 rounded-lg border border-red-100 bg-red-50 p-3 text-sm text-red-700">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              {submitError}
-            </div>
-          )}
-
-          <div className="flex justify-between">
-            <Button variant="outline" onClick={() => setStep(3)} disabled={submitting}>
-              <ChevronLeft className="w-4 h-4" />
-              Back
-            </Button>
-            <Button onClick={handleSubmit} disabled={submitting} size="lg">
-              {submitting ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Submitting...
-                </>
+              {slots.length === 0 ? (
+                <Card className="border-dashed">
+                  <CardContent className="py-12 text-center">
+                    <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mx-auto mb-3">
+                      <Clock className="w-6 h-6 text-gray-300" />
+                    </div>
+                    <p className="text-gray-500 font-medium text-sm">No available appointment times</p>
+                    <p className="text-xs text-gray-400 mt-1">Please go back and select a different physician.</p>
+                  </CardContent>
+                </Card>
               ) : (
-                "Request Appointment"
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 stagger">
+                  {slots.map((slot) => {
+                    const start = new Date(slot.startTime);
+                    const isSelected = selectedSlot?.id === slot.id;
+                    return (
+                      <button
+                        key={slot.id}
+                        onClick={() => handleSelectSlot(slot)}
+                        className={cn(
+                          "rounded-xl border p-3 text-left transition-all duration-200 animate-slide-up",
+                          isSelected
+                            ? "border-violet-400 bg-violet-50 ring-2 ring-violet-200 shadow-md shadow-violet-100"
+                            : "border-gray-100 bg-white hover:border-violet-200 hover:bg-violet-50/30 hover:-translate-y-0.5 shadow-sm hover:shadow-md hover:shadow-violet-50"
+                        )}
+                      >
+                        <p className="text-xs font-medium text-gray-400">{format(start, "EEE, MMM d")}</p>
+                        <p className={cn("text-sm font-bold mt-0.5", isSelected ? "text-violet-700" : "text-gray-900")}>
+                          {format(start, "h:mm a")}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
               )}
-            </Button>
-          </div>
+
+              <div className="mt-6 flex justify-between">
+                <Button variant="outline" onClick={() => goTo(1)}>
+                  <ChevronLeft className="w-4 h-4" />
+                  Back
+                </Button>
+                <Button onClick={() => goTo(3)} disabled={!canProceedStep2} size="lg">
+                  Continue
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* ── Step 3: Patient details ── */}
+          {step === 3 && (
+            <div>
+              <StepHeader
+                title="Your Details"
+                subtitle="Tell us a bit about yourself and the reason for your visit."
+              />
+
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <FormField label="First Name" required error={form.formState.errors.patientFirstName?.message}>
+                    <Input placeholder="Jane" {...form.register("patientFirstName")} />
+                  </FormField>
+                  <FormField label="Last Name" required error={form.formState.errors.patientLastName?.message}>
+                    <Input placeholder="Smith" {...form.register("patientLastName")} />
+                  </FormField>
+                </div>
+
+                <FormField label="Email Address" required error={form.formState.errors.patientEmail?.message}>
+                  <Input type="email" placeholder="jane@example.com" {...form.register("patientEmail")} />
+                </FormField>
+
+                <FormField label="Phone Number" required error={form.formState.errors.patientPhone?.message}>
+                  <Input type="tel" placeholder="555-0100" {...form.register("patientPhone")} />
+                </FormField>
+
+                <FormField label="Reason for Visit" required error={form.formState.errors.reasonForVisit?.message}>
+                  <Textarea
+                    placeholder="Briefly describe the reason for your appointment…"
+                    rows={3}
+                    {...form.register("reasonForVisit")}
+                  />
+                </FormField>
+              </div>
+
+              <div className="mt-6 flex justify-between">
+                <Button variant="outline" onClick={() => goTo(2)}>
+                  <ChevronLeft className="w-4 h-4" />
+                  Back
+                </Button>
+                <Button
+                  size="lg"
+                  onClick={async () => {
+                    const valid = await form.trigger([
+                      "patientFirstName",
+                      "patientLastName",
+                      "patientEmail",
+                      "patientPhone",
+                      "reasonForVisit",
+                    ]);
+                    if (valid) goTo(4);
+                  }}
+                >
+                  Review Appointment
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* ── Step 4: Review & submit ── */}
+          {step === 4 && (
+            <div>
+              <StepHeader
+                title="Review & Confirm"
+                subtitle="Please check everything below before submitting."
+              />
+
+              <div className="rounded-2xl border border-violet-100 bg-gradient-to-b from-violet-50/60 to-white p-5 mb-4 shadow-sm">
+                <p className="text-xs font-semibold text-violet-500 uppercase tracking-widest mb-3">Appointment</p>
+                <ReviewRow label="Physician" value={`${selectedPhysician?.name} · ${selectedPhysician?.specialty}`} />
+                <ReviewRow label="Location" value={selectedPhysician?.location || ""} />
+                {selectedSlot && (
+                  <ReviewRow
+                    label="Date & Time"
+                    value={`${format(new Date(selectedSlot.startTime), "EEEE, MMMM d, yyyy")} at ${format(new Date(selectedSlot.startTime), "h:mm a")}`}
+                  />
+                )}
+              </div>
+
+              <div className="rounded-2xl border border-gray-100 bg-white p-5 mb-5 shadow-sm">
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">Patient</p>
+                <ReviewRow label="Name" value={`${form.getValues("patientFirstName")} ${form.getValues("patientLastName")}`} />
+                <ReviewRow label="Email" value={form.getValues("patientEmail")} />
+                <ReviewRow label="Phone" value={form.getValues("patientPhone")} />
+                <ReviewRow label="Reason" value={form.getValues("reasonForVisit")} />
+              </div>
+
+              {submitError && (
+                <div className="mb-4 flex items-start gap-2 rounded-xl border border-red-100 bg-red-50 p-3.5 text-sm text-red-700">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  {submitError}
+                </div>
+              )}
+
+              <div className="flex justify-between">
+                <Button variant="outline" onClick={() => goTo(3)} disabled={submitting}>
+                  <ChevronLeft className="w-4 h-4" />
+                  Back
+                </Button>
+                <Button onClick={handleSubmit} disabled={submitting} size="lg">
+                  {submitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Submitting…
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="w-4 h-4" />
+                      Request Appointment
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
+
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Helper sub-components ── */
+
+function StepHeader({ title, subtitle }: { title: string; subtitle: React.ReactNode }) {
+  return (
+    <div className="mb-5">
+      <h2 className="text-xl font-bold text-gray-900">{title}</h2>
+      <p className="text-sm text-gray-500 mt-0.5">{subtitle}</p>
+    </div>
+  );
+}
+
+function FormField({
+  label,
+  required,
+  error,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  error?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+        {label}
+        {required && <span className="text-red-400 ml-0.5">*</span>}
+      </label>
+      {children}
+      {error && (
+        <p className="text-xs text-red-500 mt-1 flex items-center gap-1">
+          <AlertCircle className="w-3 h-3" />
+          {error}
+        </p>
       )}
     </div>
   );
@@ -529,9 +528,10 @@ export default function BookingPage() {
 
 function ReviewRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex gap-3 py-1.5">
-      <span className="text-sm text-gray-500 w-36 shrink-0">{label}</span>
-      <span className="text-sm text-gray-900 font-medium">{value}</span>
+    <div className="flex gap-3 py-1">
+      <span className="text-sm text-gray-400 w-28 shrink-0">{label}</span>
+      <span className="text-sm text-gray-900 font-semibold leading-snug">{value}</span>
     </div>
   );
 }
+
