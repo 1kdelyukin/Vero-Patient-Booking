@@ -4,38 +4,35 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
+function VeroLogo() {
+  return (
+    <svg viewBox="0 0 550 150" className="h-8 w-auto" aria-label="Vero" fill="#348cc4" stroke="#348cc4">
+      <path d="M478.955 6.803c-17.964 0-33.305 6.294-46.024 18.751-12.72 12.457-19.144 29.502-19.144 51.007 0 22.553 6.162 39.862 18.62 51.794 12.456 11.932 27.929 17.963 46.417 17.963h.393c18.095 0 33.306-6.03 45.631-17.963 12.326-11.932 18.489-29.241 18.489-51.794 0-21.505-6.294-38.55-18.882-51.007-12.588-12.457-27.798-18.75-45.5-18.75zm0 4.721c30.42 0 45.631 21.635 45.631 65.037 0 13.112-1.18 24.127-3.54 33.043-2.36 8.917-5.77 15.604-10.228 20.062-4.458 4.458-9.31 7.605-14.423 9.44-5.097 1.83-10.978 2.746-17.637 2.752h.067-.132.065c-6.92-.01-12.931-.922-18.028-2.751-5.114-1.836-9.966-4.983-14.424-9.573-4.458-4.589-7.867-11.276-10.228-20.061-2.36-8.785-3.54-19.8-3.54-32.912 0-24.127 4.196-41.042 12.588-50.614 8.392-9.572 19.669-14.423 33.83-14.423zM384.919 9.037c-7.474 0-14.424 2.491-20.718 7.474-6.294 4.983-11.014 11.54-14.03 19.8V11.659l-17.44 2.623v131.91h17.44v-89.95c0-11.277 3.41-20.456 10.228-27.536 6.818-7.08 15.079-10.622 24.782-10.622 4.327 0 9.179 1.705 14.555 5.114l4.589-9.703c-6.818-3.016-13.243-4.458-19.144-4.458zM249.993 6.934c-18.226 0-33.043 5.901-44.32 17.702-11.276 11.801-16.914 29.24-16.914 52.318 0 21.636 5.769 38.681 17.308 51.007s26.224 18.489 43.926 18.489c13.637 0 25.307-3.803 35.01-11.54 9.703-7.736 15.866-17.963 18.62-30.813l-11.54-2.754c-2.228 12.72-7.211 22.684-14.816 29.765-7.606 7.08-16.653 10.621-27.274 10.621-13.768 0-24.389-4.72-31.731-14.161-7.343-9.441-11.015-26.356-11.015-50.745h98.604v-3.278c0-22.16-5.244-38.812-15.734-49.958-10.49-11.145-23.865-16.653-40.124-16.653zm-.131 4.72c11.932 0 21.504 5.246 28.585 15.867 7.08 10.62 10.62 25.438 10.62 44.581l-81.82-.13c.131-12.195 1.311-22.291 3.41-30.421 2.097-8.13 5.244-14.292 9.309-18.488 4.065-4.196 8.392-7.212 13.112-8.917 4.72-1.704 10.359-2.491 16.784-2.491z" strokeWidth="4.092" strokeLinecap="round"/>
+      <path d="M118.685 108.712h8.179l-2.263 5.343h-3.094zM113.175 98.282h18.106l-2.263 5.344h-13.02zM107.665 87.852h27.95l-2.444 5.344h-22.683zM102.156 77.423h37.96l-2.264 5.344H104.98zM111.543 66.993h32.99l-2.263 5.344h-32.84zM115.56 35.704h42.224l-2.263 5.344h-42.073zM140.565 25.274h21.636l-2.262 5.344h-21.486z" strokeWidth="0.574" paintOrder="stroke"/>
+      <path d="M117.169 3.586L92.887 59.878l4.057 7.679 24.185-57.105h51.882l-30.637 72.339-16.634 39.276 3.915 7.411 16.795-38.939 18.055-41.857 19.452-45.096z" strokeWidth="0.574" paintOrder="stroke"/>
+      <path d="M4.605 3.566C32.728 51.15 59.22 99.858 86.271 148.056h35.363S44.158 3.61 44.17 3.566z" strokeWidth="0.565" paintOrder="stroke"/>
+      <path d="M111.47 46.399h42.224l-2.263 5.344h-42.073z" strokeWidth="0.574" paintOrder="stroke"/>
+    </svg>
+  );
+}
+
 export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100/80 shadow-sm shadow-gray-100/50">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="relative w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center shadow-md shadow-violet-200 group-hover:shadow-violet-300 transition-shadow">
-            <svg viewBox="0 0 20 20" fill="none" className="w-4.5 h-4.5 text-white w-[18px] h-[18px]">
-              <path
-                d="M10 17s-7-4.35-7-9a5 5 0 0 1 7-4.58A5 5 0 0 1 17 8c0 4.65-7 9-7 9z"
-                fill="currentColor"
-              />
-            </svg>
-          </div>
-          <span className="font-bold text-gray-900 text-[17px] tracking-tight">
-            Vero
-            <span className="bg-gradient-to-r from-violet-600 to-indigo-500 bg-clip-text text-transparent">
-              Health
-            </span>
-          </span>
+    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
+      <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+        <Link href="/" className="flex items-center">
+          <VeroLogo />
         </Link>
 
-        {/* Nav */}
         <nav className="flex items-center gap-1">
           <Link
             href="/"
             className={cn(
               "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
               pathname === "/"
-                ? "bg-violet-50 text-violet-700"
+                ? "bg-sky-50 text-[#348cc4]"
                 : "text-gray-500 hover:text-gray-800 hover:bg-gray-50"
             )}
           >
@@ -46,7 +43,7 @@ export function Header() {
             className={cn(
               "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
               pathname === "/admin"
-                ? "bg-violet-50 text-violet-700"
+                ? "bg-sky-50 text-[#348cc4]"
                 : "text-gray-500 hover:text-gray-800 hover:bg-gray-50"
             )}
           >

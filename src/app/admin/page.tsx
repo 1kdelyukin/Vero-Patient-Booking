@@ -107,7 +107,7 @@ export default function AdminPage() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
       {/* Header */}
       <div className="flex items-center gap-3 mb-2 animate-slide-up">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center shadow-md shadow-violet-200">
+        <div className="w-10 h-10 rounded-xl bg-[#348cc4] flex items-center justify-center shadow-md shadow-sky-200">
           <LayoutDashboard className="w-5 h-5 text-white" />
         </div>
         <div>
@@ -121,7 +121,7 @@ export default function AdminPage() {
         <SummaryCard label="Pending" count={counts.pending} gradient="from-amber-500 to-orange-500" />
         <SummaryCard label="Confirmed" count={counts.confirmed} gradient="from-emerald-500 to-teal-500" />
         <SummaryCard label="Cancelled" count={counts.cancelled} gradient="from-gray-400 to-slate-500" />
-        <SummaryCard label="Total" count={bookings.length} gradient="from-violet-600 to-indigo-600" />
+        <SummaryCard label="Total" count={bookings.length} gradient="from-[#348cc4] to-sky-500" />
       </div>
 
       {/* Status filter */}
@@ -134,8 +134,8 @@ export default function AdminPage() {
             className={cn(
               "px-3 py-1.5 rounded-lg text-sm font-semibold transition-all",
               statusFilter === f.value
-                ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-200"
-                : "bg-white border border-gray-200 text-gray-600 hover:border-violet-200 hover:text-violet-700"
+                ? "bg-[#348cc4] text-white shadow-md shadow-sky-200"
+                : "bg-white border border-gray-200 text-gray-600 hover:border-sky-200 hover:text-[#348cc4]"
             )}
           >
             {f.label}
@@ -146,7 +146,7 @@ export default function AdminPage() {
       {/* Bookings list */}
       {loading ? (
         <div className="flex justify-center py-16">
-          <Loader2 className="w-6 h-6 animate-spin text-violet-500" />
+          <Loader2 className="w-6 h-6 animate-spin text-[#348cc4]" />
         </div>
       ) : displayedBookings.length === 0 ? (
         <Card>

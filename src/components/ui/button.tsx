@@ -11,9 +11,9 @@ const Button = React.forwardRef<
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
+        "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#348cc4] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
         variant === "default" &&
-          "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-200 hover:shadow-violet-300 hover:from-violet-700 hover:to-indigo-700",
+          "bg-[#348cc4] text-white shadow-md shadow-sky-200 hover:bg-[#2a7ab0] hover:shadow-sky-300",
         variant === "outline" &&
           "border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-300 shadow-sm",
         variant === "ghost" && "text-gray-700 hover:bg-gray-100",

@@ -34,7 +34,7 @@ export default async function ConfirmationPage({ params }: PageProps) {
     <div className="max-w-lg mx-auto px-4 sm:px-6 py-10">
       {/* Success banner */}
       <div className="text-center mb-8 animate-slide-up">
-        <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center mb-5 shadow-lg shadow-violet-200 animate-scale-in">
+        <div className="mx-auto w-16 h-16 rounded-2xl bg-[#348cc4] flex items-center justify-center mb-5 shadow-lg shadow-sky-200 animate-scale-in">
           <CheckCircle2 className="w-8 h-8 text-white" />
         </div>
         <h1 className="text-2xl font-bold text-gray-900">
@@ -54,7 +54,7 @@ export default async function ConfirmationPage({ params }: PageProps) {
           </div>
 
           <div className="space-y-2 pt-4">
-            <p className="text-xs font-semibold text-violet-500 uppercase tracking-widest mb-3">Appointment</p>
+            <p className="text-xs font-semibold text-[#348cc4] uppercase tracking-widest mb-3">Appointment</p>
             <ConfirmRow
               icon={<Stethoscope className="w-4 h-4" />}
               label="Physician"
@@ -121,7 +121,7 @@ function ConfirmRow({
 }) {
   return (
     <div className="flex items-start gap-3 py-1.5">
-      <div className="w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center text-violet-500 shrink-0">
+      <div className="w-8 h-8 rounded-lg bg-sky-50 flex items-center justify-center text-[#348cc4] shrink-0">
         {icon}
       </div>
       <div className="flex-1 min-w-0">

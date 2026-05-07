@@ -47,10 +47,10 @@ const STEPS = [
 
 /** Deterministic gradient per physician index */
 const AVATAR_GRADIENTS = [
-  "from-violet-500 to-indigo-600",
-  "from-indigo-500 to-blue-600",
-  "from-fuchsia-500 to-violet-600",
-  "from-sky-500 to-indigo-600",
+  "from-sky-400 to-[#348cc4]",
+  "from-teal-400 to-sky-600",
+  "from-cyan-500 to-blue-600",
+  "from-sky-500 to-teal-600",
 ];
 
 function initials(name: string) {
@@ -160,17 +160,25 @@ export default function BookingPage() {
   return (
     <div>
       {/* Hero banner */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-indigo-600 to-indigo-700 py-10 px-4">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(255,255,255,0.12),transparent)]" />
+      <div className="relative overflow-hidden py-16 px-4" style={{ background: 'linear-gradient(150deg, #c8e9f6 0%, #dfd0ef 50%, #f8e6d8 100%)' }}>
+        <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[420px] bg-[radial-gradient(ellipse,rgba(52,140,196,0.2),transparent_65%)]" />
+        <div className="pointer-events-none absolute bottom-0 right-1/4 w-[350px] h-[250px] bg-[radial-gradient(ellipse,rgba(250,180,120,0.18),transparent_65%)]" />
         <div className="relative max-w-2xl mx-auto text-center">
-          <div className="inline-flex items-center gap-1.5 bg-white/15 backdrop-blur-sm text-white/90 text-xs font-semibold px-3 py-1 rounded-full mb-4 animate-fade-in">
+          <div className="inline-flex items-center gap-1.5 bg-white/75 backdrop-blur-sm text-[#348cc4] text-xs font-semibold px-3 py-1.5 rounded-full mb-6 border border-white/80 animate-fade-in shadow-sm">
             <Sparkles className="w-3 h-3" />
             Intelligent Patient Scheduling
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight animate-slide-up">
-            Book Your Appointment
+          <h1 className="text-3xl sm:text-[2.75rem] font-bold text-gray-900 tracking-tight animate-slide-up leading-tight">
+            The intelligent way to book
+            <br />
+            <span
+              className="italic font-bold"
+              style={{ fontFamily: 'var(--font-lora, Georgia, "Times New Roman", serif)' }}
+            >
+              modern care.
+            </span>
           </h1>
-          <p className="text-indigo-100 mt-2 text-sm sm:text-base animate-slide-up" style={{ animationDelay: "60ms" }}>
+          <p className="text-gray-600 mt-4 text-sm sm:text-base animate-slide-up max-w-sm mx-auto" style={{ animationDelay: '60ms' }}>
             Connect with your care team in minutes.
           </p>
         </div>
@@ -190,8 +198,8 @@ export default function BookingPage() {
                   <div
                     className={cn(
                       "w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300",
-                      isActive && "bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-200",
-                      isCompleted && "bg-violet-100 text-violet-600",
+                    isActive && "bg-[#348cc4] text-white shadow-md shadow-sky-200",
+                    isCompleted && "bg-sky-100 text-[#348cc4]",
                       !isActive && !isCompleted && "bg-gray-100 text-gray-400"
                     )}
                   >
@@ -204,7 +212,7 @@ export default function BookingPage() {
                   <span
                     className={cn(
                       "text-xs mt-1.5 font-medium hidden sm:block transition-colors duration-300",
-                      isActive ? "text-violet-600" : isCompleted ? "text-violet-400" : "text-gray-400"
+                      isActive ? "text-[#348cc4]" : isCompleted ? "text-sky-400" : "text-gray-400"
                     )}
                   >
                     {s.label}
@@ -213,7 +221,7 @@ export default function BookingPage() {
                 {i < STEPS.length - 1 && (
                   <div className="relative w-12 sm:w-16 h-0.5 mx-2 mb-4 overflow-hidden rounded-full bg-gray-100">
                     <div
-                      className="absolute inset-y-0 left-0 bg-gradient-to-r from-violet-400 to-indigo-400 transition-all duration-500"
+                      className="absolute inset-y-0 left-0 bg-[#348cc4] transition-all duration-500"
                       style={{ width: step > stepNum ? "100%" : "0%" }}
                     />
                   </div>
@@ -236,7 +244,7 @@ export default function BookingPage() {
 
               {loadingPhysicians ? (
                 <div className="flex justify-center py-16">
-                  <Loader2 className="w-6 h-6 animate-spin text-violet-500" />
+                  <Loader2 className="w-6 h-6 animate-spin text-[#348cc4]" />
                 </div>
               ) : (
                 <div className="space-y-3 stagger">
@@ -247,8 +255,8 @@ export default function BookingPage() {
                       className={cn(
                         "w-full text-left rounded-2xl border p-4 transition-all duration-200 animate-slide-up",
                         selectedPhysician?.id === p.id
-                          ? "border-violet-400 bg-violet-50/80 ring-2 ring-violet-200 shadow-md shadow-violet-100"
-                          : "border-gray-100 bg-white hover:border-violet-200 hover:shadow-md hover:shadow-violet-50 hover:-translate-y-0.5 shadow-sm"
+                          ? "border-[#348cc4]/50 bg-sky-50 ring-2 ring-sky-200 shadow-md shadow-sky-100"
+                          : "border-gray-100 bg-white hover:border-sky-200 hover:shadow-md hover:shadow-sky-50 hover:-translate-y-0.5 shadow-sm"
                       )}
                     >
                       <div className="flex items-center gap-3">
@@ -264,10 +272,10 @@ export default function BookingPage() {
                           <div className="flex items-start justify-between gap-2">
                             <div>
                               <p className="font-semibold text-gray-900 text-sm leading-tight">{p.name}</p>
-                              <p className="text-xs text-violet-600 font-medium mt-0.5">{p.specialty}</p>
+                              <p className="text-xs text-[#348cc4] font-medium mt-0.5">{p.specialty}</p>
                             </div>
                             {selectedPhysician?.id === p.id && (
-                              <CheckCircle2 className="w-[18px] h-[18px] text-violet-500 shrink-0 mt-0.5" />
+                              <CheckCircle2 className="w-[18px] h-[18px] text-[#348cc4] shrink-0 mt-0.5" />
                             )}
                           </div>
                           <div className="flex items-center gap-1 mt-1.5 text-gray-400 text-xs">
@@ -337,12 +345,12 @@ export default function BookingPage() {
                         className={cn(
                           "rounded-xl border p-3 text-left transition-all duration-200 animate-slide-up",
                           isSelected
-                            ? "border-violet-400 bg-violet-50 ring-2 ring-violet-200 shadow-md shadow-violet-100"
-                            : "border-gray-100 bg-white hover:border-violet-200 hover:bg-violet-50/30 hover:-translate-y-0.5 shadow-sm hover:shadow-md hover:shadow-violet-50"
+                            ? "border-[#348cc4]/50 bg-sky-50 ring-2 ring-sky-200 shadow-md shadow-sky-100"
+                            : "border-gray-100 bg-white hover:border-sky-200 hover:bg-sky-50/30 hover:-translate-y-0.5 shadow-sm hover:shadow-md hover:shadow-sky-50"
                         )}
                       >
                         <p className="text-xs font-medium text-gray-400">{format(start, "EEE, MMM d")}</p>
-                        <p className={cn("text-sm font-bold mt-0.5", isSelected ? "text-violet-700" : "text-gray-900")}>
+                        <p className={cn("text-sm font-bold mt-0.5", isSelected ? "text-[#2a7ab0]" : "text-gray-900")}>
                           {format(start, "h:mm a")}
                         </p>
                       </button>
@@ -432,8 +440,8 @@ export default function BookingPage() {
                 subtitle="Please check everything below before submitting."
               />
 
-              <div className="rounded-2xl border border-violet-100 bg-gradient-to-b from-violet-50/60 to-white p-5 mb-4 shadow-sm">
-                <p className="text-xs font-semibold text-violet-500 uppercase tracking-widest mb-3">Appointment</p>
+              <div className="rounded-2xl border border-sky-100 bg-gradient-to-b from-sky-50/50 to-white p-5 mb-4 shadow-sm">
+                <p className="text-xs font-semibold text-[#348cc4] uppercase tracking-widest mb-3">Appointment</p>
                 <ReviewRow label="Physician" value={`${selectedPhysician?.name} · ${selectedPhysician?.specialty}`} />
                 <ReviewRow label="Location" value={selectedPhysician?.location || ""} />
                 {selectedSlot && (

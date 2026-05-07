@@ -13,7 +13,7 @@ function Badge({ className, variant = "default", ...props }: BadgeProps) {
         variant === "pending" && "bg-amber-50 text-amber-700 ring-amber-200",
         variant === "confirmed" && "bg-emerald-50 text-emerald-700 ring-emerald-200",
         variant === "cancelled" && "bg-gray-100 text-gray-500 ring-gray-200",
-        variant === "default" && "bg-violet-50 text-violet-700 ring-violet-200",
+        variant === "default" && "bg-sky-50 text-[#348cc4] ring-sky-200",
         className
       )}
       {...props}
