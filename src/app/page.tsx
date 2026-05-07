@@ -160,7 +160,7 @@ export default function BookingPage() {
   return (
     <div>
       {/* Hero banner */}
-      <div className="relative overflow-hidden pt-28 pb-16 px-4" style={{ background: 'linear-gradient(150deg, #c8e9f6 0%, #dfd0ef 50%, #f8e6d8 100%)' }}>
+      <div className="relative overflow-hidden pt-28 pb-10 px-4">
         <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[420px] bg-[radial-gradient(ellipse,rgba(52,140,196,0.2),transparent_65%)]" />
         <div className="pointer-events-none absolute bottom-0 right-1/4 w-[350px] h-[250px] bg-[radial-gradient(ellipse,rgba(250,180,120,0.18),transparent_65%)]" />
         <div className="relative max-w-2xl mx-auto text-center">

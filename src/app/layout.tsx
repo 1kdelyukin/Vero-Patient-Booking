@@ -30,11 +30,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`h-full ${jakarta.variable} ${lora.variable}`}>
-      <body className={`min-h-full flex flex-col bg-white ${jakarta.className}`}>
+      <body className={`min-h-full flex flex-col ${jakarta.className}`} style={{ background: 'linear-gradient(150deg, #c8e9f6 0%, #dfd0ef 50%, #f8e6d8 100%)', backgroundAttachment: 'fixed' }}>
         <Header />
         <main className="flex-1">{children}</main>
-        <footer className="border-t border-gray-100 bg-white py-5 mt-10">
-          <p className="text-center text-xs text-gray-400 tracking-wide">
+        <footer className="border-t border-white/30 py-5 mt-10">
+          <p className="text-center text-xs text-gray-500/60 tracking-wide">
             Demo application — do not enter real patient health information.
           </p>
         </footer>
