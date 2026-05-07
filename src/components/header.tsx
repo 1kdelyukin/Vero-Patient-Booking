@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -18,38 +19,64 @@ function VeroLogo() {
 
 export function Header() {
   const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100">
-      <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center">
-          <VeroLogo />
-        </Link>
+    <header className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
+      <div
+        className={cn(
+          "pointer-events-auto transition-all duration-300 ease-out",
+          scrolled
+            ? "mx-4 mt-3 bg-white/90 backdrop-blur-xl shadow-lg shadow-gray-300/25 border border-gray-200/50 rounded-2xl"
+            : "mx-0 mt-0 bg-transparent border-transparent"
+        )}
+      >
+        <div
+          className={cn(
+            "max-w-5xl mx-auto flex items-center justify-between transition-all duration-300",
+            scrolled ? "px-5 py-3" : "px-6 py-4"
+          )}
+        >
+          <Link href="/" className="flex items-center">
+            <VeroLogo />
+          </Link>
 
-        <nav className="flex items-center gap-1">
-          <Link
-            href="/"
-            className={cn(
-              "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
-              pathname === "/"
-                ? "bg-sky-50 text-[#348cc4]"
-                : "text-gray-500 hover:text-gray-800 hover:bg-gray-50"
-            )}
-          >
-            Book
-          </Link>
-          <Link
-            href="/admin"
-            className={cn(
-              "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
-              pathname === "/admin"
-                ? "bg-sky-50 text-[#348cc4]"
-                : "text-gray-500 hover:text-gray-800 hover:bg-gray-50"
-            )}
-          >
-            Admin
-          </Link>
-        </nav>
+          <nav className="flex items-center gap-1">
+            <Link
+              href="/"
+              className={cn(
+                "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
+                pathname === "/"
+                  ? "bg-sky-50/80 text-[#348cc4]"
+                  : scrolled
+                  ? "text-gray-500 hover:text-gray-800 hover:bg-gray-100/60"
+                  : "text-gray-700 hover:text-gray-900 hover:bg-white/50"
+              )}
+            >
+              Book
+            </Link>
+            <Link
+              href="/admin"
+              className={cn(
+                "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
+                pathname === "/admin"
+                  ? "bg-sky-50/80 text-[#348cc4]"
+                  : scrolled
+                  ? "text-gray-500 hover:text-gray-800 hover:bg-gray-100/60"
+                  : "text-gray-700 hover:text-gray-900 hover:bg-white/50"
+              )}
+            >
+              Admin
+            </Link>
+          </nav>
+        </div>
       </div>
     </header>
   );

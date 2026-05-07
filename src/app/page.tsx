@@ -160,7 +160,7 @@ export default function BookingPage() {
   return (
     <div>
       {/* Hero banner */}
-      <div className="relative overflow-hidden py-16 px-4" style={{ background: 'linear-gradient(150deg, #c8e9f6 0%, #dfd0ef 50%, #f8e6d8 100%)' }}>
+      <div className="relative overflow-hidden pt-28 pb-16 px-4" style={{ background: 'linear-gradient(150deg, #c8e9f6 0%, #dfd0ef 50%, #f8e6d8 100%)' }}>
         <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[420px] bg-[radial-gradient(ellipse,rgba(52,140,196,0.2),transparent_65%)]" />
         <div className="pointer-events-none absolute bottom-0 right-1/4 w-[350px] h-[250px] bg-[radial-gradient(ellipse,rgba(250,180,120,0.18),transparent_65%)]" />
         <div className="relative max-w-2xl mx-auto text-center">
@@ -184,55 +184,69 @@ export default function BookingPage() {
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
-        {/* Step indicator */}
-        <div className="flex items-center justify-center mb-8 animate-fade-in">
-          {STEPS.map((s, i) => {
-            const stepNum = i + 1;
-            const isActive = step === stepNum;
-            const isCompleted = step > stepNum;
-            const Icon = s.icon;
-            return (
-              <div key={s.label} className="flex items-center">
-                <div className="flex flex-col items-center">
-                  <div
-                    className={cn(
-                      "w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300",
-                    isActive && "bg-[#348cc4] text-white shadow-md shadow-sky-200",
-                    isCompleted && "bg-sky-100 text-[#348cc4]",
-                      !isActive && !isCompleted && "bg-gray-100 text-gray-400"
-                    )}
-                  >
-                    {isCompleted ? (
-                      <CheckCircle2 className="w-4 h-4" />
-                    ) : (
-                      <Icon className="w-4 h-4" />
-                    )}
-                  </div>
-                  <span
-                    className={cn(
-                      "text-xs mt-1.5 font-medium hidden sm:block transition-colors duration-300",
-                      isActive ? "text-[#348cc4]" : isCompleted ? "text-sky-400" : "text-gray-400"
-                    )}
-                  >
-                    {s.label}
-                  </span>
-                </div>
-                {i < STEPS.length - 1 && (
-                  <div className="relative w-12 sm:w-16 h-0.5 mx-2 mb-4 overflow-hidden rounded-full bg-gray-100">
-                    <div
-                      className="absolute inset-y-0 left-0 bg-[#348cc4] transition-all duration-500"
-                      style={{ width: step > stepNum ? "100%" : "0%" }}
-                    />
-                  </div>
-                )}
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 pb-12">
+        {/* Booking card – Vero app style */}
+        <div className="bg-white rounded-3xl border border-gray-200/60 shadow-xl shadow-gray-200/30 overflow-hidden animate-scale-in">
+          {/* Card header bar */}
+          <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 bg-gray-50/40">
+            <div className="flex items-center gap-2.5">
+              <div className="w-6 h-6 rounded-lg bg-[#348cc4] flex items-center justify-center shadow-sm shadow-sky-200">
+                <Sparkles className="w-3.5 h-3.5 text-white" />
               </div>
-            );
-          })}
-        </div>
+              <span className="text-sm font-semibold text-gray-800">New Appointment</span>
+            </div>
+            <span className="text-xs text-gray-400 font-medium bg-gray-100/60 px-2.5 py-1 rounded-full tabular-nums">
+              {step} / {STEPS.length}
+            </span>
+          </div>
 
-        {/* Animated step panel */}
-        <div key={step} className={cn(isForward ? "animate-slide-right" : "animate-slide-up")}>
+          <div className="flex">
+            {/* Left sidebar – step navigation */}
+            <div className="hidden sm:flex flex-col w-44 border-r border-gray-100 py-3 px-2 shrink-0 bg-gray-50/20">
+              <div className="flex flex-col gap-0.5 flex-1">
+                {STEPS.map((s, i) => {
+                  const stepNum = i + 1;
+                  const isActive = step === stepNum;
+                  const isCompleted = step > stepNum;
+                  const Icon = s.icon;
+                  return (
+                    <div
+                      key={s.label}
+                      className={cn(
+                        "flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 select-none",
+                        isActive ? "bg-sky-50 text-[#348cc4]" : isCompleted ? "text-gray-500" : "text-gray-300"
+                      )}
+                    >
+                      <div className={cn(
+                        "w-6 h-6 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200",
+                        isActive ? "bg-[#348cc4] text-white shadow-sm shadow-sky-200" : isCompleted ? "bg-sky-50 text-[#348cc4]" : "bg-gray-100 text-gray-300"
+                      )}>
+                        {isCompleted ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Icon className="w-3.5 h-3.5" />}
+                      </div>
+                      <span>{s.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="px-3 pb-2 pt-4">
+                <p className="text-[10px] text-gray-300 font-semibold uppercase tracking-wider">Powered by Vero</p>
+              </div>
+            </div>
+
+            {/* Main content area */}
+            <div className="flex-1 min-w-0 p-5 sm:p-6">
+              {/* Mobile progress bar */}
+              <div className="flex items-center gap-1.5 mb-5 sm:hidden">
+                {STEPS.map((_, i) => (
+                  <div key={i} className={cn(
+                    "h-1 rounded-full flex-1 transition-all duration-300",
+                    step > i + 1 ? "bg-[#348cc4]" : step === i + 1 ? "bg-[#348cc4]/50" : "bg-gray-100"
+                  )} />
+                ))}
+              </div>
+
+              {/* Animated step content */}
+              <div key={step} className={cn(isForward ? "animate-slide-right" : "animate-slide-up")}>
 
           {/* ── Step 1: Choose physician ── */}
           {step === 1 && (
@@ -489,6 +503,9 @@ export default function BookingPage() {
             </div>
           )}
 
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

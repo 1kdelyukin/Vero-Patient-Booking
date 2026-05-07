@@ -104,7 +104,7 @@ export default function AdminPage() {
       : bookings.filter((b) => b.status === statusFilter);
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-24 pb-10">
       {/* Header */}
       <div className="flex items-center gap-3 mb-2 animate-slide-up">
         <div className="w-10 h-10 rounded-xl bg-[#348cc4] flex items-center justify-center shadow-md shadow-sky-200">

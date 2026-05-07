@@ -31,7 +31,7 @@ export default async function ConfirmationPage({ params }: PageProps) {
   const statusInfo = statusMap[booking.status as StatusKey];
 
   return (
-    <div className="max-w-lg mx-auto px-4 sm:px-6 py-10">
+    <div className="max-w-lg mx-auto px-4 sm:px-6 pt-24 pb-10">
       {/* Success banner */}
       <div className="text-center mb-8 animate-slide-up">
         <div className="mx-auto w-16 h-16 rounded-2xl bg-[#348cc4] flex items-center justify-center mb-5 shadow-lg shadow-sky-200 animate-scale-in">
