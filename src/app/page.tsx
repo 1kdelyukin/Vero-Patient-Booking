@@ -92,7 +92,7 @@ export default function BookingPage() {
     fetch("/api/physicians")
       .then((r) => r.json())
       .then((data) => {
-        setPhysicians(data);
+        setPhysicians(Array.isArray(data) ? data : []);
         setLoadingPhysicians(false);
       })
       .catch(() => setLoadingPhysicians(false));
@@ -263,11 +263,11 @@ export default function BookingPage() {
               ) : (
                 <div className="space-y-3 stagger">
                   {physicians.map((p, idx) => (
+                    <div key={p.id} className="animate-slide-up">
                     <button
-                      key={p.id}
                       onClick={() => handleSelectPhysician(p)}
                       className={cn(
-                        "w-full text-left rounded-2xl border p-4 transition-all duration-200 animate-slide-up",
+                        "w-full text-left rounded-2xl border p-4 transition-all duration-200",
                         selectedPhysician?.id === p.id
                           ? "border-[#348cc4]/50 bg-sky-50 ring-2 ring-sky-200 shadow-md shadow-sky-100"
                           : "border-gray-100 bg-white hover:border-sky-200 hover:shadow-md hover:shadow-sky-50 hover:-translate-y-0.5 shadow-sm"
@@ -302,6 +302,7 @@ export default function BookingPage() {
                         </div>
                       </div>
                     </button>
+                    </div>
                   ))}
                 </div>
               )}
@@ -353,11 +354,11 @@ export default function BookingPage() {
                     const start = new Date(slot.startTime);
                     const isSelected = selectedSlot?.id === slot.id;
                     return (
+                      <div key={slot.id} className="animate-slide-up">
                       <button
-                        key={slot.id}
                         onClick={() => handleSelectSlot(slot)}
                         className={cn(
-                          "rounded-xl border p-3 text-left transition-all duration-200 animate-slide-up",
+                          "w-full rounded-xl border p-3 text-left transition-all duration-200",
                           isSelected
                             ? "border-[#348cc4]/50 bg-sky-50 ring-2 ring-sky-200 shadow-md shadow-sky-100"
                             : "border-gray-100 bg-white hover:border-sky-200 hover:bg-sky-50/30 hover:-translate-y-0.5 shadow-sm hover:shadow-md hover:shadow-sky-50"
@@ -368,6 +369,7 @@ export default function BookingPage() {
                           {format(start, "h:mm a")}
                         </p>
                       </button>
+                      </div>
                     );
                   })}
                 </div>
