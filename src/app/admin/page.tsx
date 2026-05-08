@@ -189,7 +189,7 @@ export default function AdminPage() {
             <div className="flex-1 min-w-0 p-5 sm:p-6">
 
               {/* Stat pills — show all 3 on "All", only the relevant one on filtered tabs */}
-              <div className={cn("grid gap-3 mb-6 stagger", statusFilter === "ALL" ? "grid-cols-3" : "grid-cols-1 max-w-[200px]")}>
+              <div className={cn("grid gap-3 mb-6 stagger", statusFilter === "ALL" ? "grid-cols-3" : "grid-cols-1")}>
                 {statusFilter === "ALL" || statusFilter === "PENDING" ? (
                   <StatPill label="Pending"   count={counts.pending}   colorClass="text-amber-500"   bgClass="bg-amber-50 border-amber-100" />
                 ) : null}

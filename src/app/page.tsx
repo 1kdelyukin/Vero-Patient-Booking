@@ -374,11 +374,11 @@ export default function BookingPage() {
               )}
 
               <div className="mt-6 flex justify-between">
-                <Button variant="outline" size="lg" onClick={() => goTo(1)}>
+                <Button variant="outline" size="lg" onClick={() => goTo(1)} className="min-w-[120px] justify-center">
                   <ChevronLeft className="w-4 h-4" />
                   Back
                 </Button>
-                <Button onClick={() => goTo(3)} disabled={!canProceedStep2} size="lg">
+                <Button onClick={() => goTo(3)} disabled={!canProceedStep2} size="lg" className="min-w-[120px] justify-center">
                   Continue
                   <ChevronRight className="w-4 h-4" />
                 </Button>
@@ -422,12 +422,13 @@ export default function BookingPage() {
               </div>
 
               <div className="mt-6 flex justify-between">
-                <Button variant="outline" size="lg" onClick={() => goTo(2)}>
+                <Button variant="outline" size="lg" onClick={() => goTo(2)} className="min-w-[120px] justify-center">
                   <ChevronLeft className="w-4 h-4" />
                   Back
                 </Button>
                 <Button
                   size="lg"
+                  className="min-w-[120px] justify-center"
                   onClick={async () => {
                     const valid = await form.trigger([
                       "patientFirstName",
@@ -482,11 +483,11 @@ export default function BookingPage() {
               )}
 
               <div className="flex justify-between">
-                <Button variant="outline" size="lg" onClick={() => goTo(3)} disabled={submitting}>
+                <Button variant="outline" size="lg" onClick={() => goTo(3)} disabled={submitting} className="min-w-[120px] justify-center">
                   <ChevronLeft className="w-4 h-4" />
                   Back
                 </Button>
-                <Button onClick={handleSubmit} disabled={submitting} size="lg">
+                <Button onClick={handleSubmit} disabled={submitting} size="lg" className="min-w-[120px] justify-center">
                   {submitting ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
