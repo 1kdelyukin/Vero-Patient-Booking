@@ -240,13 +240,14 @@ export default function AdminPage() {
                 <>
                   <div className="space-y-2.5 stagger">
                     {pagedBookings.map((booking) => (
-                      <BookingCard
-                        key={booking.id}
-                        booking={booking}
-                        onUpdateStatus={handleUpdateStatus}
-                        onDelete={handleDelete}
-                        actionLoading={actionLoading}
-                      />
+                      <div key={booking.id} className="animate-slide-up">
+                        <BookingCard
+                          booking={booking}
+                          onUpdateStatus={handleUpdateStatus}
+                          onDelete={handleDelete}
+                          actionLoading={actionLoading}
+                        />
+                      </div>
                     ))}
                   </div>
 
@@ -348,13 +349,19 @@ function BookingCard({
     CANCELLED: "bg-gray-50 text-gray-400 ring-1 ring-gray-200",
   }[booking.status];
 
+  const hoverTint = {
+    PENDING: "card-hover-amber",
+    CONFIRMED: "card-hover-emerald",
+    CANCELLED: "card-hover-gray",
+  }[booking.status];
+
   const canConfirm = booking.status === "PENDING";
   const canCancel = booking.status === "PENDING" || booking.status === "CONFIRMED";
 
   return (
     <div className={cn(
-      "rounded-2xl border border-gray-100 bg-white flex overflow-hidden transition-all duration-200 animate-slide-up",
-      "hover:-translate-y-0.5 hover:shadow-md hover:shadow-gray-200/50",
+      "rounded-2xl border border-gray-100 bg-white flex overflow-hidden card-hover",
+      hoverTint,
       booking.status === "CANCELLED" && "opacity-60"
     )}>
       {/* Status accent strip */}

@@ -47,6 +47,34 @@
 .stagger > *:nth-child(5) { animation-delay: 240ms; }
 .stagger > *:nth-child(6) { animation-delay: 300ms; }
 
+/* ─── Hover lift (uses transform not translate for cross-browser reliability) ── */
+.card-hover {
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease, background-color 200ms ease, opacity 200ms ease;
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+}
+.card-hover-blue:hover {
+  background-color: #f0f9ff;
+  border-color: #bae6fd;
+  box-shadow: 0 4px 12px 0 rgb(186 230 253 / 0.4);
+}
+.card-hover-amber:hover {
+  background-color: #fffbeb;
+  border-color: #fde68a;
+  box-shadow: 0 4px 12px 0 rgb(253 230 138 / 0.35);
+}
+.card-hover-emerald:hover {
+  background-color: #f0fdf4;
+  border-color: #a7f3d0;
+  box-shadow: 0 4px 12px 0 rgb(167 243 208 / 0.35);
+}
+.card-hover-gray:hover {
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+  box-shadow: 0 4px 12px 0 rgb(229 231 235 / 0.5);
+}
+
 /* ─── Base ───────────────────────────────────────────────── */
 body {
   background: var(--background);

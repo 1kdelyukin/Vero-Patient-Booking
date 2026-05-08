@@ -267,10 +267,10 @@ export default function BookingPage() {
                     <button
                       onClick={() => handleSelectPhysician(p)}
                       className={cn(
-                        "w-full text-left rounded-2xl border p-4 transition-all duration-200",
+                        "w-full text-left rounded-2xl border p-4 card-hover",
                         selectedPhysician?.id === p.id
                           ? "border-[#348cc4]/50 bg-sky-50 ring-2 ring-sky-200 shadow-md shadow-sky-100"
-                          : "border-gray-100 bg-white hover:border-sky-200 hover:shadow-md hover:shadow-sky-50 hover:-translate-y-0.5 shadow-sm"
+                          : "border-gray-100 bg-white shadow-sm card-hover-blue"
                       )}
                     >
                       <div className="flex items-center gap-3">
@@ -358,10 +358,10 @@ export default function BookingPage() {
                       <button
                         onClick={() => handleSelectSlot(slot)}
                         className={cn(
-                          "w-full rounded-xl border p-3 text-left transition-all duration-200",
+                          "w-full rounded-xl border p-3 text-left card-hover",
                           isSelected
                             ? "border-[#348cc4]/50 bg-sky-50 ring-2 ring-sky-200 shadow-md shadow-sky-100"
-                            : "border-gray-100 bg-white hover:border-sky-200 hover:bg-sky-50/30 hover:-translate-y-0.5 shadow-sm hover:shadow-md hover:shadow-sky-50"
+                            : "border-gray-100 bg-white shadow-sm card-hover-blue"
                         )}
                       >
                         <p className="text-xs font-medium text-gray-400">{format(start, "EEE, MMM d")}</p>
