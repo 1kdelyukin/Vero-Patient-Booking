@@ -12,7 +12,10 @@ import {
   XCircle,
   Clock,
   LayoutDashboard,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -55,6 +58,8 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("ALL");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const PAGE_SIZE = 10;
 
   const fetchBookings = useCallback(async () => {
     setLoading(true);
@@ -65,6 +70,7 @@ export default function AdminPage() {
     const res = await fetch(url);
     const data = await res.json();
     setBookings(data);
+    setCurrentPage(1);
     setLoading(false);
   }, [statusFilter]);
 
@@ -80,26 +86,39 @@ export default function AdminPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
       });
-      if (res.ok) {
-        await fetchBookings();
-      }
+      if (res.ok) await fetchBookings();
     } finally {
       setActionLoading(null);
     }
   };
 
-  // Compute summary counts
+  const handleDelete = async (bookingId: string) => {
+    setActionLoading(bookingId + "DELETE");
+    try {
+      const res = await fetch(`/api/bookings/${bookingId}`, { method: "DELETE" });
+      if (res.ok) await fetchBookings();
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  // Counts always from full unfiltered set; fetch the ALL list to compute
   const counts = {
     pending: bookings.filter((b) => b.status === "PENDING").length,
     confirmed: bookings.filter((b) => b.status === "CONFIRMED").length,
     cancelled: bookings.filter((b) => b.status === "CANCELLED").length,
-    total: bookings.length,
   };
 
-  const displayedBookings =
+  const filteredBookings =
     statusFilter === "ALL"
       ? bookings
       : bookings.filter((b) => b.status === statusFilter);
+
+  const totalPages = Math.max(1, Math.ceil(filteredBookings.length / PAGE_SIZE));
+  const pagedBookings = filteredBookings.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
 
   return (
     <div>
@@ -169,11 +188,17 @@ export default function AdminPage() {
             {/* Main panel */}
             <div className="flex-1 min-w-0 p-5 sm:p-6">
 
-              {/* Stat pills */}
-              <div className="grid grid-cols-3 gap-3 mb-6 stagger">
-                <StatPill label="Pending"   count={counts.pending}   colorClass="text-amber-500"   bgClass="bg-amber-50 border-amber-100" />
-                <StatPill label="Confirmed" count={counts.confirmed} colorClass="text-emerald-600" bgClass="bg-emerald-50 border-emerald-100" />
-                <StatPill label="Cancelled" count={counts.cancelled} colorClass="text-gray-400"    bgClass="bg-gray-50 border-gray-100" />
+              {/* Stat pills — show all 3 on "All", only the relevant one on filtered tabs */}
+              <div className={cn("grid gap-3 mb-6 stagger", statusFilter === "ALL" ? "grid-cols-3" : "grid-cols-1 max-w-[200px]")}>
+                {statusFilter === "ALL" || statusFilter === "PENDING" ? (
+                  <StatPill label="Pending"   count={counts.pending}   colorClass="text-amber-500"   bgClass="bg-amber-50 border-amber-100" />
+                ) : null}
+                {statusFilter === "ALL" || statusFilter === "CONFIRMED" ? (
+                  <StatPill label="Confirmed" count={counts.confirmed} colorClass="text-emerald-600" bgClass="bg-emerald-50 border-emerald-100" />
+                ) : null}
+                {statusFilter === "ALL" || statusFilter === "CANCELLED" ? (
+                  <StatPill label="Cancelled" count={counts.cancelled} colorClass="text-gray-400"    bgClass="bg-gray-50 border-gray-100" />
+                ) : null}
               </div>
 
               {/* Mobile filter tabs */}
@@ -199,7 +224,7 @@ export default function AdminPage() {
                 <div className="flex justify-center py-16">
                   <Loader2 className="w-6 h-6 animate-spin text-[#348cc4]" />
                 </div>
-              ) : displayedBookings.length === 0 ? (
+              ) : filteredBookings.length === 0 ? (
                 <div className="py-16 text-center animate-fade-in">
                   <div className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center mx-auto mb-3">
                     <Calendar className="w-6 h-6 text-gray-300" />
@@ -212,16 +237,53 @@ export default function AdminPage() {
                   </p>
                 </div>
               ) : (
-                <div className="space-y-2.5 stagger">
-                  {displayedBookings.map((booking) => (
-                    <BookingCard
-                      key={booking.id}
-                      booking={booking}
-                      onUpdateStatus={handleUpdateStatus}
-                      actionLoading={actionLoading}
-                    />
-                  ))}
-                </div>
+                <>
+                  <div className="space-y-2.5 stagger">
+                    {pagedBookings.map((booking) => (
+                      <BookingCard
+                        key={booking.id}
+                        booking={booking}
+                        onUpdateStatus={handleUpdateStatus}
+                        onDelete={handleDelete}
+                        actionLoading={actionLoading}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Pagination */}
+                  {totalPages > 1 && (
+                    <div className="flex items-center justify-center gap-1 mt-6 animate-fade-in">
+                      <button
+                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={cn(
+                            "w-8 h-8 rounded-lg text-sm font-semibold transition-all",
+                            page === currentPage
+                              ? "bg-[#348cc4] text-white shadow-sm shadow-sky-200"
+                              : "text-gray-500 hover:bg-gray-100"
+                          )}
+                        >
+                          {page}
+                        </button>
+                      ))}
+                      <button
+                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                        className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-400 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
@@ -260,10 +322,12 @@ function StatPill({
 function BookingCard({
   booking,
   onUpdateStatus,
+  onDelete,
   actionLoading,
 }: {
   booking: Booking;
   onUpdateStatus: (id: string, status: "CONFIRMED" | "CANCELLED") => void;
+  onDelete: (id: string) => void;
   actionLoading: string | null;
 }) {
   const statusLabel = {
@@ -351,6 +415,22 @@ function BookingCard({
                   <XCircle className="w-3.5 h-3.5" />
                 )}
                 Cancel
+              </Button>
+            )}
+            {booking.status === "CANCELLED" && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => onDelete(booking.id)}
+                disabled={actionLoading !== null}
+                className="gap-1.5 text-red-500 border-red-100 hover:bg-red-50 hover:border-red-200"
+              >
+                {actionLoading === booking.id + "DELETE" ? (
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                ) : (
+                  <Trash2 className="w-3.5 h-3.5" />
+                )}
+                Delete
               </Button>
             )}
           </div>

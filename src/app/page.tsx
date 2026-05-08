@@ -374,7 +374,7 @@ export default function BookingPage() {
               )}
 
               <div className="mt-6 flex justify-between">
-                <Button variant="outline" onClick={() => goTo(1)}>
+                <Button variant="outline" size="lg" onClick={() => goTo(1)}>
                   <ChevronLeft className="w-4 h-4" />
                   Back
                 </Button>
@@ -422,7 +422,7 @@ export default function BookingPage() {
               </div>
 
               <div className="mt-6 flex justify-between">
-                <Button variant="outline" onClick={() => goTo(2)}>
+                <Button variant="outline" size="lg" onClick={() => goTo(2)}>
                   <ChevronLeft className="w-4 h-4" />
                   Back
                 </Button>
@@ -482,7 +482,7 @@ export default function BookingPage() {
               )}
 
               <div className="flex justify-between">
-                <Button variant="outline" onClick={() => goTo(3)} disabled={submitting}>
+                <Button variant="outline" size="lg" onClick={() => goTo(3)} disabled={submitting}>
                   <ChevronLeft className="w-4 h-4" />
                   Back
                 </Button>
